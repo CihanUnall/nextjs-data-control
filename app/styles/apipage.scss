@@ -1,0 +1,9 @@
+.pizza-list {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  width: 60%;
+  border: solid 1px #ccc;
+  margin: 0 auto;
+}

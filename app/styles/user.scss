@@ -1,0 +1,36 @@
+form {
+  border: solid 1px green;
+  width: 30rem;
+  height: 5rem;
+  button {
+    background-color: green;
+    color: white;
+    border: none;
+    width: 5rem;
+    height: 2rem;
+    border-radius: 5px;
+  }
+}
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin: 0;
+    padding: 0;
+    border: solid 1px blue;
+    margin-bottom: 5px;
+    padding: 5px;
+  }
+  li:hover {
+    background-color: lightblue;
+  }
+}
+.user-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}

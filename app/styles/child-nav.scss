@@ -1,0 +1,17 @@
+.child-nav {
+  background-color: rgb(211, 37, 173);
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  li:hover {
+    background-color: #e72910;
+    color: #ffffff;
+    width: 6rem;
+    height: 1.5rem;
+    text-align: center;
+    border-radius: 5px;
+  }
+}
