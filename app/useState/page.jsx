@@ -4,43 +4,44 @@ import { useState, useEffect } from "react";
 import "../styles/rateus.css";
 
 export default function RateUsPage() {
-  const [like, setLike] = useState(20070630);
-  const [heart, setHeart] = useState(1009020);
-  const [smile, setSmile] = useState(1080105);
+  const [like, setLike] = useState(null);
+  const [heart, setHeart] = useState(null);
+  const [smile, setSmile] = useState(null);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
+  const [isClient, setIsClient] = useState(false);
 
   const maxLength = 600;
 
-  // Load values from localStorage (only on the client side)
+  // Sayfa client'ta mı çalışıyor kontrolü
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLike = localStorage.getItem("like");
-      if (storedLike) setLike(parseInt(storedLike));
+    setIsClient(true);
+  }, []);
 
-      const storedHeart = localStorage.getItem("heart");
-      if (storedHeart) setHeart(parseInt(storedHeart));
-
-      const storedSmile = localStorage.getItem("smile");
-      if (storedSmile) setSmile(parseInt(storedSmile));
+  // LocalStorage'dan veri çek (sadece client'ta)
+  useEffect(() => {
+    if (isClient) {
+      setLike(parseInt(localStorage.getItem("like") || "20070630"));
+      setHeart(parseInt(localStorage.getItem("heart") || "1009020"));
+      setSmile(parseInt(localStorage.getItem("smile") || "1080105"));
 
       const storedComments = localStorage.getItem("comments");
       if (storedComments) setComments(JSON.parse(storedComments));
     }
-  }, []);
+  }, [isClient]);
 
-  // Save updates to localStorage
+  // LocalStorage'a kaydet (değer null değilse)
   useEffect(() => {
-    localStorage.setItem("like", like.toString());
+    if (like !== null) localStorage.setItem("like", like.toString());
   }, [like]);
 
   useEffect(() => {
-    localStorage.setItem("heart", heart.toString());
+    if (heart !== null) localStorage.setItem("heart", heart.toString());
   }, [heart]);
 
   useEffect(() => {
-    localStorage.setItem("smile", smile.toString());
+    if (smile !== null) localStorage.setItem("smile", smile.toString());
   }, [smile]);
 
   useEffect(() => {
@@ -49,10 +50,7 @@ export default function RateUsPage() {
 
   const handleSubmit = () => {
     if (comment.trim() !== "" && rating > 0) {
-      const newComment = {
-        text: comment,
-        rating: rating,
-      };
+      const newComment = { text: comment, rating };
       setComments([...comments, newComment]);
       setComment("");
       setRating(0);
@@ -70,6 +68,9 @@ export default function RateUsPage() {
     setComment(value);
   };
 
+  if (!isClient || like === null || heart === null || smile === null) {
+    return <p>Loading...</p>; // SSR sırasında çalışmasın
+  }
   return (
     <div className="like-page">
       <div className="like-info">
