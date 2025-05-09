@@ -4,45 +4,11 @@ import { useState, useEffect } from "react";
 import "../styles/rateus.css";
 
 export default function RateUsPage() {
-  const [like, setLike] = useState(null);
-  const [heart, setHeart] = useState(null);
-  const [smile, setSmile] = useState(null);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
 
   const maxLength = 600;
-
-  // LocalStorage'dan veri çek (sadece client'ta)
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setLike(parseInt(localStorage.getItem("like") || "20070630"));
-      setHeart(parseInt(localStorage.getItem("heart") || "1009020"));
-      setSmile(parseInt(localStorage.getItem("smile") || "1080105"));
-
-      const storedComments = localStorage.getItem("comments");
-      if (storedComments) setComments(JSON.parse(storedComments));
-    }
-  }, []);
-
-  // LocalStorage'a kaydet (değer null değilse)
-  useEffect(() => {
-    if (typeof window !== "undefined" && like !== null) {
-      localStorage.setItem("like", like.toString());
-    }
-  }, [like]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && heart !== null) {
-      localStorage.setItem("heart", heart.toString());
-    }
-  }, [heart]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && smile !== null) {
-      localStorage.setItem("smile", smile.toString());
-    }
-  }, [smile]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -69,10 +35,6 @@ export default function RateUsPage() {
     }
     setComment(value);
   };
-
-  if (like === null || heart === null || smile === null) {
-    return <p>Loading...</p>; // SSR sırasında çalışmasın
-  }
 
   return (
     <div className="like-page">
@@ -135,31 +97,6 @@ export default function RateUsPage() {
         />
 
         <button onClick={handleSubmit}>Submit</button>
-      </div>
-
-      {/* Like Buttons */}
-      <div className="like-container">
-        <div className="like-page1">
-          <h2>Total Likes</h2>
-          <input type="text" value={like} readOnly />
-          <button onClick={() => setLike(like + 1)}>
-            <i className="fa-solid fa-thumbs-up"></i>
-          </button>
-        </div>
-        <div className="like-page1">
-          <h2>Total Hearts</h2>
-          <input type="text" value={heart} readOnly />
-          <button onClick={() => setHeart(heart + 1)}>
-            <i className="fa-solid fa-heart"></i>
-          </button>
-        </div>
-        <div className="like-page1">
-          <h2>Total Smiles</h2>
-          <input type="text" value={smile} readOnly />
-          <button onClick={() => setSmile(smile + 1)}>
-            <i className="fa-solid fa-face-kiss-wink-heart"></i>
-          </button>
-        </div>
       </div>
 
       {/* Comments List */}
