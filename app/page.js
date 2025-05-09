@@ -1,121 +1,116 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import "./styles/home.scss";
+import "./styles/rateus.css";
 
-export default function HomePage() {
-  const [like, setLike] = useState(() => {
-    const stored = localStorage.getItem("like");
-    return stored ? parseInt(stored) : 20070630;
-  });
-
-  const [heart, setHeart] = useState(() => {
-    const stored = localStorage.getItem("heart");
-    return stored ? parseInt(stored) : 1009020;
-  });
-
-  const [smile, setSmile] = useState(() => {
-    const stored = localStorage.getItem("smile");
-    return stored ? parseInt(stored) : 1080105;
-  });
-
-  const [comments, setComments] = useState(() => {
-    const stored = localStorage.getItem("comments");
-    return stored ? JSON.parse(stored) : [];
-  });
-
+export default function RateUsPage() {
+  const [like, setLike] = useState(null);
+  const [heart, setHeart] = useState(null);
+  const [smile, setSmile] = useState(null);
+  const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(0); // ⭐️⭐️⭐️⭐️⭐️
+  const [rating, setRating] = useState(0);
 
-  // localStorage kayıtları
+  const maxLength = 600;
+
+  // LocalStorage'dan veri çek (sadece client'ta)
   useEffect(() => {
-    localStorage.setItem("like", like.toString());
+    if (typeof window !== "undefined") {
+      setLike(parseInt(localStorage.getItem("like") || "20070630"));
+      setHeart(parseInt(localStorage.getItem("heart") || "1009020"));
+      setSmile(parseInt(localStorage.getItem("smile") || "1080105"));
+
+      const storedComments = localStorage.getItem("comments");
+      if (storedComments) setComments(JSON.parse(storedComments));
+    }
+  }, []);
+
+  // LocalStorage'a kaydet (değer null değilse)
+  useEffect(() => {
+    if (typeof window !== "undefined" && like !== null) {
+      localStorage.setItem("like", like.toString());
+    }
   }, [like]);
 
   useEffect(() => {
-    localStorage.setItem("heart", heart.toString());
+    if (typeof window !== "undefined" && heart !== null) {
+      localStorage.setItem("heart", heart.toString());
+    }
   }, [heart]);
 
   useEffect(() => {
-    localStorage.setItem("smile", smile.toString());
+    if (typeof window !== "undefined" && smile !== null) {
+      localStorage.setItem("smile", smile.toString());
+    }
   }, [smile]);
 
   useEffect(() => {
-    localStorage.setItem("comments", JSON.stringify(comments));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("comments", JSON.stringify(comments));
+    }
   }, [comments]);
 
   const handleSubmit = () => {
     if (comment.trim() !== "" && rating > 0) {
-      const newComment = {
-        text: comment,
-        rating: rating,
-      };
+      const newComment = { text: comment, rating };
       setComments([...comments, newComment]);
       setComment("");
-      setRating(0); // Reset after submit
+      setRating(0);
     } else {
-      alert("Lütfen yorum yazın ve yıldız puanı seçin.");
+      alert("Please write a comment and select a star rating.");
     }
   };
-
-  const maxLength = 600;
 
   const handleCommentChange = (e) => {
     const value = e.target.value;
     if (value.length > maxLength) {
-      alert("You have reached maximum 600 character length!");
+      alert("You have reached the maximum 600 character limit!");
       return;
     }
     setComment(value);
   };
 
+  if (like === null || heart === null || smile === null) {
+    return <p>Loading...</p>; // SSR sırasında çalışmasın
+  }
+
   return (
     <div className="like-page">
       <div className="like-info">
         <p>
-          <strong> How did you find this page?</strong>
+          <strong>How did you find this page?</strong>
         </p>
         <p>
           You can leave a comment, give a star rating, and support us with a
           like. 🌟
         </p>
-        <p>
-          Share your thoughts with us! You can leave a comment, give a star
-          rating, and support us with a like. 🌟
-        </p>
+        <p>We truly value your feedback—it helps us grow and improve!</p>
         <hr />
         <p>
-          <strong> Your opinion matters to us!</strong>
+          <strong>Your opinion matters to us!</strong>
         </p>
         <p>
-          Rate this page: give stars ⭐, leave a comment 💬, and show some love
-          with a like 👍
+          Rate this page: leave stars ⭐, comments 💬, and show some love with a
+          like 👍
         </p>
-        <p>Your feedback helps us grow and improve.</p>
+        <p>Thank you for supporting us! 💛</p>
         <hr />
         <p>
-          <strong>🎯 How much do you like us?</strong>
+          <strong>🎯 How much do you like this page?</strong>
         </p>
-        <p>Give us some stars ⭐⭐⭐⭐⭐</p>
-        <p>Leave your comment 💬</p>
+        <p>Rate us with stars ⭐⭐⭐⭐⭐</p>
+        <p>Leave your comments 💬</p>
         <p>And don’t forget to hit the like button! 👍</p>
-        <p>Thanks for your support! 💛</p>
         <hr />
-        <p>
-          <strong>What do you think about our page?</strong>
-        </p>
-        <p>
-          You can share your experience by leaving a comment, giving a rating
-          from 1 to 5 stars, and clicking the like button.
-        </p>
-        <p>Every piece of feedback helps us improve our service.</p>
       </div>
-      {/* comments---------------------- */}
+
+      {/* Comment Section */}
       <div className="like-page-comment">
         <label htmlFor="comment">
           <i className="fa-solid fa-comments"></i> Comments:
         </label>
 
-        {/* ⭐️⭐️⭐️⭐️⭐️ Star Rating */}
+        {/* Star Rating */}
         <div className="star-rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <span
@@ -141,26 +136,25 @@ export default function HomePage() {
 
         <button onClick={handleSubmit}>Submit</button>
       </div>
-      {/* ---------------------- */}
-      {/* --like button-------------------- */}
 
+      {/* Like Buttons */}
       <div className="like-container">
         <div className="like-page1">
-          <h2>Total Like</h2>
+          <h2>Total Likes</h2>
           <input type="text" value={like} readOnly />
           <button onClick={() => setLike(like + 1)}>
             <i className="fa-solid fa-thumbs-up"></i>
           </button>
         </div>
         <div className="like-page1">
-          <h2>Total Heart</h2>
+          <h2>Total Hearts</h2>
           <input type="text" value={heart} readOnly />
           <button onClick={() => setHeart(heart + 1)}>
             <i className="fa-solid fa-heart"></i>
           </button>
         </div>
         <div className="like-page1">
-          <h2>Total Smile</h2>
+          <h2>Total Smiles</h2>
           <input type="text" value={smile} readOnly />
           <button onClick={() => setSmile(smile + 1)}>
             <i className="fa-solid fa-face-kiss-wink-heart"></i>
@@ -168,9 +162,10 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Comments List */}
       <div className="commentary">
         <ul>
-          <h2>Comments</h2>
+          <h2>All Comments</h2>
           <hr />
           {comments.map((c, index) => (
             <li key={index}>

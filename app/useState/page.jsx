@@ -10,18 +10,12 @@ export default function RateUsPage() {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
-  const [isClient, setIsClient] = useState(false);
 
   const maxLength = 600;
 
-  // Sayfa client'ta mı çalışıyor kontrolü
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // LocalStorage'dan veri çek (sadece client'ta)
   useEffect(() => {
-    if (isClient) {
+    if (typeof window !== "undefined") {
       setLike(parseInt(localStorage.getItem("like") || "20070630"));
       setHeart(parseInt(localStorage.getItem("heart") || "1009020"));
       setSmile(parseInt(localStorage.getItem("smile") || "1080105"));
@@ -29,23 +23,31 @@ export default function RateUsPage() {
       const storedComments = localStorage.getItem("comments");
       if (storedComments) setComments(JSON.parse(storedComments));
     }
-  }, [isClient]);
+  }, []);
 
   // LocalStorage'a kaydet (değer null değilse)
   useEffect(() => {
-    if (like !== null) localStorage.setItem("like", like.toString());
+    if (typeof window !== "undefined" && like !== null) {
+      localStorage.setItem("like", like.toString());
+    }
   }, [like]);
 
   useEffect(() => {
-    if (heart !== null) localStorage.setItem("heart", heart.toString());
+    if (typeof window !== "undefined" && heart !== null) {
+      localStorage.setItem("heart", heart.toString());
+    }
   }, [heart]);
 
   useEffect(() => {
-    if (smile !== null) localStorage.setItem("smile", smile.toString());
+    if (typeof window !== "undefined" && smile !== null) {
+      localStorage.setItem("smile", smile.toString());
+    }
   }, [smile]);
 
   useEffect(() => {
-    localStorage.setItem("comments", JSON.stringify(comments));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("comments", JSON.stringify(comments));
+    }
   }, [comments]);
 
   const handleSubmit = () => {
@@ -68,9 +70,10 @@ export default function RateUsPage() {
     setComment(value);
   };
 
-  if (!isClient || like === null || heart === null || smile === null) {
+  if (like === null || heart === null || smile === null) {
     return <p>Loading...</p>; // SSR sırasında çalışmasın
   }
+
   return (
     <div className="like-page">
       <div className="like-info">
