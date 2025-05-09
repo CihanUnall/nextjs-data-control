@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 
 import ChildNav from "./components/childNav";
 import { usePathname } from "next/navigation";
+import { RateUsProvider } from "./context/RateUsContext/page";
 
 const metadata = {
   title: "Next.js App",
@@ -16,11 +17,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header />
+        <RateUsProvider>
+          <Header />
+          {pathname.startsWith("/childpage") && <ChildNav />}
+          {children}
+          <Footer />
+        </RateUsProvider>
 
-        {pathname.startsWith("/childpage") && <ChildNav />}
-        {children}
-        <Footer />
         <script
           src="https://kit.fontawesome.com/94a0c02d39.js"
           crossOrigin="anonymous"

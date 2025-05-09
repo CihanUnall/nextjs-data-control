@@ -14,7 +14,7 @@ function Nav() {
           <Link href="/user">User</Link>
         </li>
         <li>
-          <Link href="/useState">useState</Link>
+          <Link href="/rateUsPage">Rate Us</Link>
         </li>
         <li>
           <Link href="/useEffect">useEffect</Link>

@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useState, useContext } from "react";
+import { RateUsContext } from "../context/RateUsContext/page";
+
 import "../styles/rateus.css";
 
 export default function RateUsPage() {
-  const [like, setLike] = useLocalStorage("like", 20070630);
-  const [heart, setHeart] = useLocalStorage("heart", 1009020);
-  const [smile, setSmile] = useLocalStorage("smile", 1080105);
-  const [comments, setComments] = useLocalStorage("comments", []);
+  const {
+    like,
+    setLike,
+    heart,
+    setHeart,
+    smile,
+    setSmile,
+    comments,
+    addComment,
+  } = useContext(RateUsContext);
 
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
@@ -16,8 +23,7 @@ export default function RateUsPage() {
 
   const handleSubmit = () => {
     if (comment.trim() !== "" && rating > 0) {
-      const newComment = { text: comment, rating };
-      setComments([...comments, newComment]);
+      addComment({ text: comment, rating });
       setComment("");
       setRating(0);
     } else {
@@ -34,14 +40,9 @@ export default function RateUsPage() {
     setComment(value);
   };
 
-  if (like === null || heart === null || smile === null) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <div className="like-page">
       <div className="like-info">
-        {/* Info Text */}
         <p>
           <strong>How did you find this page?</strong>
         </p>
@@ -53,7 +54,6 @@ export default function RateUsPage() {
         <hr />
       </div>
 
-      {/* Comment Section */}
       <div className="like-page-comment">
         <label htmlFor="comment">
           <i className="fa-solid fa-comments"></i> Comments:
@@ -84,7 +84,6 @@ export default function RateUsPage() {
         <button onClick={handleSubmit}>Submit</button>
       </div>
 
-      {/* Like Buttons */}
       <div className="like-container">
         <div className="like-page1">
           <h2>Total Likes</h2>
@@ -109,7 +108,6 @@ export default function RateUsPage() {
         </div>
       </div>
 
-      {/* Comments List */}
       <div className="commentary">
         <ul>
           <h2>All Comments</h2>
